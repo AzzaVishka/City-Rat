@@ -1,0 +1,8 @@
+﻿Name,Quantity,Component
+"U1",1," Arduino Uno R3"
+"D1, D2",2,"Red LED"
+"MLeft Ear Motor, M1",2," DC Motor"
+"R1, R2",2,"1 kΩ Resistor"
+"U2",1," H-bridge Motor Driver"
+"SERVO1, SERVO2",2,"Positional Micro Servo"
+"S1",1," Pushbutton"
