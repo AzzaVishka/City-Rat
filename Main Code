@@ -1,0 +1,109 @@
+#include <Servo.h>
+
+// Define pin numbers
+const int button1Pin = 2;
+const int button2Pin = 7;
+const int motor1PinA = 13; // Motor 1 pins on motor driver
+const int motor1PinB = 12;
+const int motor2PinA = 9; // Motor 2 pins on motor driver
+const int motor2PinB = 8;
+const int led1Pin = 8;
+const int led2Pin = 9;
+const int servo1Pin = 4;
+const int servo2Pin = 3;     
+const int PWMA = 11;            //speed control pin on the motor driver for the right moto
+const int PWMB = 10;           //speed control pin on the motor driver for the left motor
+int mySensVals[10] = {1, 2, 1, 1, 1, 2, 2, 2, 1, 1}; // data for march 2023 of rat sightings in NYC 1 = manhattan 2= brookyln
+// Define motor and  servo objects
+Servo servo1;
+Servo servo2;
+
+// Define state variables
+bool button1State = false;
+bool button2State = false;
+
+void setup() {
+  // Initialize digital pins
+  pinMode(PWMA, OUTPUT);
+  pinMode(PWMB, OUTPUT);
+  pinMode(button1Pin, INPUT_PULLUP);
+  pinMode(button2Pin, INPUT_PULLUP);
+  pinMode(motor1PinA, OUTPUT);
+  pinMode(motor1PinB, OUTPUT);
+  pinMode(motor2PinA, OUTPUT);
+  pinMode(motor2PinB, OUTPUT);
+  pinMode(led1Pin, OUTPUT);
+  pinMode(led2Pin, OUTPUT);
+
+  // Initialize servo pins
+  servo1.attach(servo1Pin);
+  servo2.attach(servo2Pin);
+
+  // Set LEDs to stay off initially
+  digitalWrite(led1Pin, LOW);
+  digitalWrite(led2Pin, LOW);
+}
+
+void loop() {
+  // Check if button 1 is pressed
+  if (digitalRead(button1Pin) == LOW) {
+    button1State = true;
+    for (byte i = 0; i < 5; i = i + 1) {
+  digitalRead(mySensVals[i]);
+  } else {
+    button1State = false;
+  }
+
+  // Check if button 2 is pressed
+  if (digitalRead(button2Pin) == LOW) {
+    button2State = true;
+    x = mySensVals[2];
+  } else {
+    button2State = false;
+  }
+
+  // Move DC motor 1 and servo 1 if button 1 is pressed
+  if (button1State) {
+    digitalWrite(led1Pin, HIGH); // Turn on LED 1
+    moveDCMotor(motor1PinA, motor1PinB, PWMA, 200);
+    moveServo(servo1);
+     x = mySensVals[4];
+  } else {
+    digitalWrite(led1Pin, HIGH); // Turn off LED 1
+  }
+
+  // Move DC motor 2 and servo 2 if button 2 is pressed
+  if (button2State) {
+    digitalWrite(led2Pin, HIGH); // Turn on LED 2
+    moveDCMotor(motor2PinA, motor2PinB, PWMB, 200);
+    moveServo(servo2);
+     x = mySensVals[5];
+  } else {
+    digitalWrite(led2Pin, HIGH); // Turn off LED 2
+  }
+}
+
+void moveDCMotor(int pinA, int pinB, int pwmPin, int motorSpeed) {
+  // Move DC motor 360 degrees for 3 seconds
+  digitalWrite(pinA, HIGH);
+  digitalWrite(pinB, LOW);
+  analogWrite(pwmPin, motorSpeed);
+  delay(3000);
+  digitalWrite(pinA, LOW);
+  digitalWrite(pinB, LOW);
+  analogWrite(pwmPin, 0);
+}
+
+void moveServo(Servo &servo) {
+  // Move servo back and forth 90 degrees two times
+  for (int i = 0; i < 2; i++) {
+    servo.write(0);
+    delay(500);
+    servo.write(90);
+    delay(1000);
+    servo.write(180);
+    delay(500);
+    servo.write(90);
+    delay(1000);
+  }
+}
